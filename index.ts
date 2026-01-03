@@ -40,7 +40,7 @@ let modelState: {
     initialized: false,
 };
 
-const MODEL_ID = 'briaai/RMBG-1.4';
+const MODEL_ID = 'Xenova/modnet';
 
 async function ensureModelLoaded() {
     if (modelState.initialized) return;
