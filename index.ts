@@ -7,9 +7,10 @@ import {
     Processor
 } from "@huggingface/transformers";
 import { createCanvas } from '@napi-rs/canvas';
-import express from 'express';
+import express, { response } from 'express';
 import type { Request, Response } from 'express';
 import multer from 'multer';
+import { readdirSync, writeFileSync } from 'fs'
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -77,6 +78,7 @@ app.post('/bg-removal', upload.single('file'), async (req: Request, res: Respons
     // @ts-expect-error
     const img = await RawImage.fromBlob(new Blob([file!.buffer]));
     try {
+        const startTime = new Date().getTime();
         const { pixel_values } = await modelState.processor!(img);
 
         // Predict alpha matte
@@ -118,13 +120,22 @@ app.post('/bg-removal', upload.single('file'), async (req: Request, res: Respons
 
         ctx.putImageData(imageData, 0, 0);
         const pngData = await canvas.encode("png");
-        global.gc?.();
 
-        return pngData;
+        const endTime = new Date().getTime();
+
+        writeFileSync(`./files/${endTime - startTime}.png`, Buffer.from(pngData));
+
+        res.send(pngData);
     } catch (error) {
         console.error("Error processing image:", error);
         throw new Error("Failed to process image");
     }
+});
+
+app.get('/', (req, res) => {
+    const files = readdirSync("./files");
+
+    res.send(files.map((file) => parseInt(file) / 1000));
 });
 
 app.listen(port);
