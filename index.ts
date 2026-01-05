@@ -7,7 +7,7 @@ import {
     Processor
 } from "@huggingface/transformers";
 import { createCanvas } from '@napi-rs/canvas';
-import express, { response } from 'express';
+import express from 'express';
 import type { Request, Response } from 'express';
 import multer from 'multer';
 import { readdirSync, writeFileSync } from 'fs'
