@@ -83,7 +83,7 @@ app.post('/bg-removal', upload.single('file'), async (req: Request, res: Respons
     // @ts-expect-error
     const img = await RawImage.fromBlob(new Blob([file!.buffer]));
     try {
-        const startTime = new Date().getTime();
+        // const startTime = new Date().getTime();
         const { pixel_values } = await modelState.processor!(img);
 
         // Predict alpha matte
@@ -126,9 +126,9 @@ app.post('/bg-removal', upload.single('file'), async (req: Request, res: Respons
         ctx.putImageData(imageData, 0, 0);
         const pngData = await canvas.encode("png");
 
-        const endTime = new Date().getTime();
+        // const endTime = new Date().getTime();
 
-        writeFileSync(`./files/${endTime - startTime}.png`, Buffer.from(pngData));
+        // writeFileSync(`./files/${endTime - startTime}.png`, Buffer.from(pngData));
 
         res.send(pngData);
     } catch (error) {
@@ -137,10 +137,10 @@ app.post('/bg-removal', upload.single('file'), async (req: Request, res: Respons
     }
 });
 
-app.get('/', (req, res) => {
-    const files = readdirSync("./files");
+// app.get('/', (req, res) => {
+//     const files = readdirSync("./files");
 
-    res.send(files.map((file) => parseInt(file) / 1000));
-});
+//     res.send(files.map((file) => parseInt(file) / 1000));
+// });
 
 app.listen(port);
