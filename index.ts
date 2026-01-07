@@ -71,6 +71,11 @@ async function ensureModelLoaded() {
 }
 
 app.post('/bg-removal', upload.single('file'), async (req: Request, res: Response) => {
+    if (req.header('Authorization') !== `Bearer ${process.env.API_KEY}`) {
+        res.status(401).send('Unauthorized');
+        return;
+    }
+
     const file = req.file;
 
     await ensureModelLoaded();
